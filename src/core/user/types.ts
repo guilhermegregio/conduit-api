@@ -11,7 +11,6 @@ const userCodecPartial = t.partial({
   image: t.string,
 })
 
-
 const userCodec = t.intersection([userCodecRequired, userCodecPartial])
 
 type User = t.TypeOf<typeof userCodec>

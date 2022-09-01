@@ -1,23 +1,23 @@
-import { isRight, isLeft } from "fp-ts/Either";
-import { profileCodec } from "./types";
+import { isRight, isLeft } from 'fp-ts/Either'
+import { profileCodec } from './types'
 
-it("should valid user", () => {
+it('should valid user', () => {
   const user = profileCodec.decode({
-    username: "",
-    bio: "",
+    username: '',
+    bio: '',
     following: true,
-    image: "http://placekitten.com/200/300",
-  });
+    image: 'http://placekitten.com/200/300',
+  })
 
-  expect(isRight(user)).toBeTruthy();
-});
+  expect(isRight(user)).toBeTruthy()
+})
 
-it("should invalid user", () => {
+it('should invalid user', () => {
   const user = profileCodec.decode({
-    email: "xpto",
-    token: "1",
+    email: 'xpto',
+    token: '1',
     username: 1,
-  });
+  })
 
-  expect(isLeft(user)).toBeTruthy();
-});
+  expect(isLeft(user)).toBeTruthy()
+})

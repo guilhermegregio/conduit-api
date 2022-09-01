@@ -1,5 +1,5 @@
-import * as t from "io-ts";
-import { profileCodec } from "@/core/profile/types";
+import * as t from 'io-ts'
+import { profileCodec } from '@/core/profile/types'
 
 const articleCodec = t.type({
   slug: t.string,
@@ -12,15 +12,15 @@ const articleCodec = t.type({
   favorited: t.boolean,
   favoritesCount: t.number,
   author: profileCodec,
-});
+})
 
 const articlesCodec = t.type({
   articles: t.array(articleCodec),
   articlesCount: t.number,
-});
+})
 
 type Article = t.TypeOf<typeof articleCodec>;
 
 type Articles = t.TypeOf<typeof articlesCodec>;
 
-export { Article, articleCodec, Articles, articlesCodec };
+export { Article, articleCodec, Articles, articlesCodec }
