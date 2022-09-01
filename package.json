@@ -28,6 +28,7 @@
     "newtype-ts": "0.3.4"
   },
   "devDependencies": {
+    "@types/module-alias": "2.0.1",
     "@types/jest": "27.0.2",
     "@types/node": "16.11.4",
     "@typescript-eslint/eslint-plugin": "5.1.0",
