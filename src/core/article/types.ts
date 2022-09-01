@@ -1,12 +1,13 @@
 import * as t from 'io-ts'
 import { profileCodec } from '@/core/profile/types'
+import { tagsCodec } from '../tag/types'
 
 const articleCodec = t.type({
   slug: t.string,
   title: t.string,
   description: t.string,
   body: t.string,
-  tagList: t.array(t.string),
+  tagList: tagsCodec,
   createdAt: t.string,
   updatedAt: t.string,
   favorited: t.boolean,
