@@ -15,4 +15,5 @@ module.exports = {
     compilerOptions.paths,
     { prefix: '<rootDir>' },
   ),
+  setupFilesAfterEnv: ['<rootDir>/src/tests/check-assertions-number.ts'],
 }

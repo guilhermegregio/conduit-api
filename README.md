@@ -2,6 +2,31 @@
 
 > API for Real World App (Conduit) using Node.js + TypeScript with Functional Programming
 
+
+## Link utils
+
+### Gist course
+https://gist.github.com/fdaciuk/9e7eb058d999bb20caa769684ae76904
+
+### RealWorld docs
+
+https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints
+
+### fp-ts
+https://gcanti.github.io/fp-ts/modules/
+
+### fp-ts-recipes
+https://grossbart.github.io/fp-ts-recipes/#/basics
+
+### io-ts
+
+https://github.com/gcanti/io-ts/blob/master/index.md
+
+### io-ts-types
+
+https://gcanti.github.io/io-ts-types/docs/modules
+
+
 ## Required global dependencies
 
 - Node.js v16
