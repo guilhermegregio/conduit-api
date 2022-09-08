@@ -2,7 +2,7 @@ import * as t from 'io-ts'
 import { withMessage } from 'io-ts-types'
 
 interface PasswordBrand {
-  readonly Password: unique symbol; // use `unique symbol` here to ensure uniqueness across modules / packages
+  readonly Password: unique symbol;
 }
 
 const isPassword = (value: string) => {
@@ -13,7 +13,7 @@ const passwordCodec = withMessage(
   t.brand(
     t.string,
     (value): value is t.Branded<string, PasswordBrand> => isPassword(value),
-    'Password', // the name must match the readonly field in the brand
+    'Password',
   ),
   () => 'Invalid Password',
 )
