@@ -2,6 +2,7 @@ import * as t from 'io-ts'
 import { emailCodec } from '../types/email'
 import { passwordCodec } from '../types/password'
 import { slugCodec } from '../types/slug'
+import { URLCodec } from '../types/url'
 
 const userCodecRequired = t.type({
   email: t.string,
@@ -16,7 +17,7 @@ const userCodecPartial = t.partial({
 
 const userCodec = t.intersection([userCodecRequired, userCodecPartial])
 
-type User = t.TypeOf<typeof userCodec>
+type User = t.TypeOf<typeof userCodec>;
 
 const createUserCodec = t.type({
   username: slugCodec,
@@ -24,6 +25,22 @@ const createUserCodec = t.type({
   password: passwordCodec,
 })
 
-type CreateUser = t.TypeOf<typeof createUserCodec>
+const updateUserCodec = t.partial({
+  username: slugCodec,
+  email: emailCodec,
+  password: passwordCodec,
+  bio: t.string,
+  image: URLCodec,
+})
 
-export { userCodec, User, createUserCodec, CreateUser }
+type CreateUser = t.TypeOf<typeof createUserCodec>;
+type UpdateUser = t.TypeOf<typeof updateUserCodec>;
+
+export {
+  userCodec,
+  User,
+  createUserCodec,
+  CreateUser,
+  updateUserCodec,
+  UpdateUser,
+}
