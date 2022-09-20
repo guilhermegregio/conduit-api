@@ -10,7 +10,7 @@ const updateFail = () => Promise.reject(new Error('Internal error'))
 const userValid: UpdateUser = {
   username: unsafe('jacob'),
   email: unsafe('jake@jake.jake'),
-  password: unsafe('jakejake')
+  password: unsafe('jakejake'),
 }
 
 it('should update user with outside ok', async () => {
