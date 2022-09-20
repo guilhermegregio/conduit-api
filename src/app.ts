@@ -1,2 +1,3 @@
+import { start } from '@/ports/express'
 
-console.log('rodou')
+start()
