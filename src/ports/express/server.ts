@@ -1,9 +1,11 @@
 import * as TE from 'fp-ts/TaskEither'
+import * as E from 'fp-ts/Either'
 import express from 'express'
 import { registerUser } from '@/core/user/use-case/register-user'
 import { pipe } from 'fp-ts/lib/function'
 import * as jose from 'jose'
 import { LoginUser, loginUserCodec } from '@/core/user/types'
+import { mapLeft } from 'fp-ts/lib/EitherT'
 
 const app = express()
 
@@ -53,10 +55,22 @@ app.post('/api/users/login', async (req, res) => {
     loginUserCodec.decode,
     TE.fromEither,
     TE.chain(user => {
-      TE.tryCatch(() => fakeLoginInDB(user), E.toError)
+      return TE.tryCatch(() => fakeLoginInDB(user), E.toError)
     }),
-    //map
-    //mapLEft
+    TE.chain(user => {
+      return pipe(
+        TE.tryCatch(() => generateJWT({ email: user.email }), E.toError), 
+        TE.map(token => { 
+          return ({ ...user, token })
+        })
+      )
+    }),
+    TE.map((user) => {
+      res.json({user})
+    }),
+    TE.mapLeft((error) => {
+      res.status(401).json({error: error.message})
+    })
   )()
 })
 
