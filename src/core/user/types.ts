@@ -36,6 +36,14 @@ const updateUserCodec = t.partial({
 type CreateUser = t.TypeOf<typeof createUserCodec>;
 type UpdateUser = t.TypeOf<typeof updateUserCodec>;
 
+
+const loginUserCodec = t.type({
+  email: emailCodec,
+  password: passwordCodec,
+})
+
+type LoginUser = t.TypeOf<typeof loginUserCodec>
+
 export {
   userCodec,
   User,
@@ -43,4 +51,6 @@ export {
   CreateUser,
   updateUserCodec,
   UpdateUser,
+  loginUserCodec,
+  LoginUser
 }

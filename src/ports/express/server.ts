@@ -3,6 +3,7 @@ import express from 'express'
 import { registerUser } from '@/core/user/use-case/register-user'
 import { pipe } from 'fp-ts/lib/function'
 import * as jose from 'jose'
+import { LoginUser, loginUserCodec } from '@/core/user/types'
 
 const app = express()
 
@@ -32,6 +33,30 @@ app.post('/api/users', async (req, res) => {
       res.json({ user: { ...response, token } })
     }),
     TE.mapLeft((result) => res.json(result)),
+  )()
+})
+
+const fakeLoginInDB = async (loginUser: LoginUser) => {
+
+  if (loginUser.password !== 'senha!secreta') {
+    throw new Error('Email or password invalid.')
+  }
+
+
+  return loginUser
+}
+
+app.post('/api/users/login', async (req, res) => {
+
+  return pipe(
+    req.body.user,
+    loginUserCodec.decode,
+    TE.fromEither,
+    TE.chain(user => {
+      TE.tryCatch(() => fakeLoginInDB(user), E.toError)
+    }),
+    //map
+    //mapLEft
   )()
 })
 
