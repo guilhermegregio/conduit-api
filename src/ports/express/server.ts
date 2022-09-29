@@ -1,84 +1,86 @@
-import * as TE from 'fp-ts/TaskEither'
-import * as E from 'fp-ts/Either'
-import express from 'express'
-import { registerUser } from '@/core/user/use-case/register-user'
-import { pipe } from 'fp-ts/lib/function'
-import * as jose from 'jose'
-import { LoginUser, loginUserCodec } from '@/core/user/types'
-import { mapLeft } from 'fp-ts/lib/EitherT'
+import * as TE from "fp-ts/TaskEither";
+import * as E from "fp-ts/Either";
+import express from "express";
+import { registerUser } from "@/core/user/use-case/register-user";
+import { pipe } from "fp-ts/lib/function";
+import * as jose from "jose";
+import { LoginUser, loginUserCodec } from "@/core/user/types";
 
-const app = express()
+const app = express();
 
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-const secret = Buffer.from('asdfasdfasdfasdfasfasdfsafasdfsadfasfsdfasfasdf')
+const secret = Buffer.from("asdfasdfasdfasdfasfasdfsafasdfsadfasfsdfasfasdf");
 const generateJWT = async (payload: any) => {
   return new jose.SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' })
-    .setExpirationTime('2h')
-    .sign(secret)
-}
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("2h")
+    .sign(secret);
+};
 
 const verifyJWT = async (token: any) => {
-  return jose.jwtVerify(token, secret)
-}
+  return jose.jwtVerify(token, secret);
+};
 
-app.post('/api/users', async (req, res) => {
+const memoryDB = { users: {} };
+
+const fakeRegisterUserDB = async (user) => {
+  return { ...user, id: Date.now() };
+};
+
+app.post("/api/users", async (req, res) => {
   return pipe(
     req.body.user,
-    registerUser<any>(async (user) => ({ ...user, id: Date.now() })),
+    registerUser<any>(fakeRegisterUserDB),
     TE.map(async (result) => {
-      const { id, ...response } = result
-      const token = await generateJWT({ id })
-      console.log(await verifyJWT(token))
-      res.json({ user: { ...response, token } })
+      const { id, ...response } = result;
+      const token = await generateJWT({ id });
+      console.log(await verifyJWT(token));
+      res.json({ user: { ...response, token } });
     }),
-    TE.mapLeft((result) => res.json(result)),
-  )()
-})
+    TE.mapLeft((result) => res.json(result))
+  )();
+});
 
 const fakeLoginInDB = async (loginUser: LoginUser) => {
-
-  if (loginUser.password !== 'senha!secreta') {
-    throw new Error('Email or password invalid.')
+  if (loginUser.password !== "senha!secreta") {
+    throw new Error("Email or password invalid.");
   }
 
+  return loginUser;
+};
 
-  return loginUser
-}
-
-app.post('/api/users/login', async (req, res) => {
-
+app.post("/api/users/login", async (req, res) => {
   return pipe(
     req.body.user,
     loginUserCodec.decode,
     TE.fromEither,
-    TE.chain(user => {
-      return TE.tryCatch(() => fakeLoginInDB(user), E.toError)
+    TE.chain((user) => {
+      return TE.tryCatch(() => fakeLoginInDB(user), E.toError);
     }),
-    TE.chain(user => {
+    TE.chain((user) => {
       return pipe(
-        TE.tryCatch(() => generateJWT({ email: user.email }), E.toError), 
-        TE.map(token => { 
-          return ({ ...user, token })
+        TE.tryCatch(() => generateJWT({ email: user.email }), E.toError),
+        TE.map((token) => {
+          return { ...user, token };
         })
-      )
+      );
     }),
     TE.map((user) => {
-      res.json({user})
+      res.json({ user });
     }),
     TE.mapLeft((error) => {
-      res.status(401).json({error: error.message})
+      res.status(401).json({ error: error.message });
     })
-  )()
-})
+  )();
+});
 
 const start = () => {
-  const port = 3000
+  const port = 3000;
   app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-  })
-}
+    console.log(`Example app listening on port ${port}`);
+  });
+};
 
-export { start }
+export { start };
